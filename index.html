@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script type="text/javascript" src="chromecastSender.js"></script>
+        <script type="text/javascript" src="https://www.gstatic.com/cv/js/sender/v1/cast_sender.js"></script>
+    </head>
+    <body>
+        <div id="player-wrapper">
+        </div>
+    </body>
+
+<script>
+
+var onCastSenderStopped = function() {
+  console.log("caught");
+};
+
+var onMediaDiscovered = onSenderCreated = onCastReceiverCreated = onCastSenderCreated = onCastReceiverCreated = onRecieverAvailable  =onSenderStarted = onCastSenderStopped = onCastSenderStopped;
+
+var onSenderStarted = function() {
+    caster.beganCasting('');
+};
+
+var onMediaDiscovered = function(media) {
+  console.log('onMediaDiscovered');
+};
+
+var config = {
+    'namespace': 'urn:x-cast:complex.simple',
+    'appId': 'CC1AD845',
+    'debug': true,
+    'onRecieverAvailable': onRecieverAvailable,
+    'onSenderStarted': onSenderStarted,
+    'onSenderStopped': onCastSenderStopped,
+    'onMediaDiscovered' : onMediaDiscovered,
+    'onSenderCreated' : onSenderCreated
+};
+
+var caster = new chromeCaster(config);
+
+setTimeout(function(){ 
+  caster.requestSession();
+}, 1000);
+
+</script>
+
+</html>
+
