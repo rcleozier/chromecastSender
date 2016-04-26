@@ -4,6 +4,16 @@ var chromeCaster = function(config) {
     this.currentMedia = false;
     this.applicationID = false;
     this.config = config;
+    this.noop = function () {};
+
+
+    this.log = function(msg) {
+      if (this.config.hasOwnProperty('debug')) {
+        if (this.config.debug) {
+          console.log(msg);
+        }
+      }
+    };
 
     this.initializeCastApi = function() {
       var sessionRequest = new chrome.cast.SessionRequest(chrome.cast.media.DEFAULT_MEDIA_RECEIVER_APP_ID);
@@ -21,20 +31,20 @@ var chromeCaster = function(config) {
         this.onRecieverAvailable();
 
       } else if (e === chrome.cast.ReceiverAvailability.UNAVAILABLE) {
-        console.log('Receiver not available');
+        this.log('Receiver not available');
       }
     }.bind(this);
 
     this.onInitSuccess = function() {
-        this.config['onSenderCreated']();
+      this.config['onSenderCreated']();
     };
 
     this.onInitError = function(error) {
-        console.log(error);
+      this.log(error);
     };
 
     this.onRecieverAvailable = function() {
-        this.config['onRecieverAvailable']();
+      this.config['onRecieverAvailable']();
     };
 
     // When user clicks cast icon, request session
@@ -56,7 +66,7 @@ var chromeCaster = function(config) {
       this.session.stop(function() {
         this.session = false;
       }, function() {
-        console.log("Could not stop session");
+        this.log("Could not stop session");
       });
     };
 
@@ -79,17 +89,17 @@ var chromeCaster = function(config) {
     };
 
     this.onMediaError = function(error) {
-        console.log(error);
+      this.log(error);
     };
 
     this.init = function() {
       var that = this;
 
-      window['__onGCastApiAvailable'] = function(loaded, errorInfo) {
+      window['__onGCastApiAvailable'] = function(loaded, error) {
         if (loaded) {
           that.initializeCastApi();
         } else {
-          console.log(errorInfo);
+          this.log(error);
         }
       }
     }.bind(this)();
